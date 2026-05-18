@@ -502,6 +502,16 @@ body {
 }
 .convert-actions label { color: #475569; font-weight: 500; }
 
+/* Force light theme colors on the dropdown specifically inside the light panels */
+.dynamic-options-panel .format-select {
+  background: #ffffff;
+  color: #1e293b;
+  border: 1px solid #cbd5e1;
+}
+.dynamic-options-panel .format-select:focus {
+  border-color: #6366f1;
+}
+
 .options-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
