@@ -1,130 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Convert - Local Converter</title>
-
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/epub.js/0.3.93/epub.min.js"></script>
-
-<style>
-body { font-family: Arial; background:#0f172a; color:white; }
-.drop-zone { border:2px dashed #475569; padding:40px; text-align:center; cursor:pointer; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Convertly — Free Local File Converter</title>
+  <meta name="description" content="Convert images, videos, audio, PDFs, documents and more — all locally in your browser. No uploads. No servers. 100% private." />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%2310b981'/><path d='M8 16l6 6 10-12' stroke='white' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>" />
 </head>
+<body>
 
-<body class="p-6 flex justify-center">
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="logo">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect width="28" height="28" rx="7" fill="#10b981"/>
+          <path d="M7 14l5 5 9-10" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Convertly
+      </a>
+      <div class="nav-badge">100% Local &amp; Private</div>
+    </div>
+  </nav>
 
-<div class="max-w-xl w-full bg-slate-800 p-6 rounded-xl">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-tag">No uploads · No servers · Runs in your browser</div>
+      <h1>Convert <em>anything</em>,<br/>keep it private.</h1>
+      <p class="hero-sub">40+ conversion formats for images, video, audio, PDFs, and documents. Everything happens on your device — your files never leave.</p>
+      <div class="hero-pills">
+        <span>🔒 100% Private</span>
+        <span>⚡ Instant</span>
+        <span>🌐 Works Offline</span>
+        <span>💸 Free Forever</span>
+      </div>
+    </div>
+  </section>
 
-<h1 class="text-2xl mb-4 text-center">OmniConvert 🔒</h1>
+  <!-- CATEGORIES -->
+  <main class="categories">
+    <div class="grid">
 
-<div id="dropZone" class="drop-zone">
-<input type="file" id="fileInput">
-<p>Upload file</p>
-</div>
+      <!-- IMAGE -->
+      <div class="cat-card">
+        <div class="cat-icon" style="background:#ecfdf5;color:#059669">🖼️</div>
+        <h2>Image Converter</h2>
+        <p>Convert between PNG, JPG, WEBP, HEIC, SVG, JFIF, GIF and more</p>
+        <div class="cat-links">
+          <a href="pages/image.html?from=webp&to=png">WEBP → PNG</a>
+          <a href="pages/image.html?from=webp&to=jpg">WEBP → JPG</a>
+          <a href="pages/image.html?from=jfif&to=png">JFIF → PNG</a>
+          <a href="pages/image.html?from=png&to=svg">PNG → SVG</a>
+          <a href="pages/image.html?from=heic&to=jpg">HEIC → JPG</a>
+          <a href="pages/image.html?from=heic&to=png">HEIC → PNG</a>
+          <a href="pages/image.html">View All →</a>
+        </div>
+      </div>
 
-<select id="outputFormat" class="w-full mt-4 p-2 bg-slate-700"></select>
+      <!-- VIDEO -->
+      <div class="cat-card">
+        <div class="cat-icon" style="background:#eff6ff;color:#2563eb">🎬</div>
+        <h2>Video Converter</h2>
+        <p>Convert MP4, MOV, AVI, WEBM and more using FFmpeg in your browser</p>
+        <div class="cat-links">
+          <a href="pages/video.html?from=mov&to=mp4">MOV → MP4</a>
+          <a href="pages/video.html?from=mp4&to=mp3">MP4 → MP3</a>
+          <a href="pages/video.html?from=mp4&to=gif">MP4 → GIF</a>
+          <a href="pages/video.html?from=webm&to=gif">WEBM → GIF</a>
+          <a href="pages/video.html?from=avi&to=gif">AVI → GIF</a>
+          <a href="pages/video.html?from=mov&to=gif">MOV → GIF</a>
+          <a href="pages/video.html">View All →</a>
+        </div>
+      </div>
 
-<button id="convertBtn" class="w-full mt-4 bg-blue-600 p-2 rounded">Convert</button>
+      <!-- AUDIO -->
+      <div class="cat-card">
+        <div class="cat-icon" style="background:#fdf4ff;color:#9333ea">🎵</div>
+        <h2>Audio Converter</h2>
+        <p>Convert MP3, OGG, WAV, FLAC, AAC and more formats locally</p>
+        <div class="cat-links">
+          <a href="pages/audio.html?from=mp3&to=ogg">MP3 → OGG</a>
+          <a href="pages/audio.html?from=mp3&to=wav">MP3 → WAV</a>
+          <a href="pages/audio.html?from=wav&to=mp3">WAV → MP3</a>
+          <a href="pages/audio.html?from=ogg&to=mp3">OGG → MP3</a>
+          <a href="pages/audio.html?from=flac&to=mp3">FLAC → MP3</a>
+          <a href="pages/audio.html">View All →</a>
+        </div>
+      </div>
 
-<div id="log" class="mt-4 text-sm"></div>
+      <!-- PDF -->
+      <div class="cat-card">
+        <div class="cat-icon" style="background:#fff7ed;color:#ea580c">📄</div>
+        <h2>PDF Converter</h2>
+        <p>PDF to Word, JPG, EPUB, and more using local PDF processing</p>
+        <div class="cat-links">
+          <a href="pages/pdf.html?from=pdf&to=jpg">PDF → JPG</a>
+          <a href="pages/pdf.html?from=pdf&to=word">PDF → Word</a>
+          <a href="pages/pdf.html?from=pdf&to=epub">PDF → EPUB</a>
+          <a href="pages/pdf.html?from=epub&to=pdf">EPUB → PDF</a>
+          <a href="pages/pdf.html?from=heic&to=pdf">HEIC → PDF</a>
+          <a href="pages/pdf.html?from=jpg&to=pdf">JPG → PDF</a>
+          <a href="pages/pdf.html?from=docx&to=pdf">DOCX → PDF</a>
+          <a href="pages/pdf.html">View All →</a>
+        </div>
+      </div>
 
-<a id="download" class="block mt-4 text-green-400"></a>
+      <!-- GIF -->
+      <div class="cat-card">
+        <div class="cat-icon" style="background:#fef2f2;color:#dc2626">✨</div>
+        <h2>GIF Tools</h2>
+        <p>Create GIFs from video, convert GIF to MP4, APNG, and more</p>
+        <div class="cat-links">
+          <a href="pages/gif.html?from=video&to=gif">Video → GIF</a>
+          <a href="pages/gif.html?from=gif&to=mp4">GIF → MP4</a>
+          <a href="pages/gif.html?from=gif&to=apng">GIF → APNG</a>
+          <a href="pages/gif.html?from=apng&to=gif">APNG → GIF</a>
+          <a href="pages/gif.html?from=image&to=gif">Image → GIF</a>
+          <a href="pages/gif.html">View All →</a>
+        </div>
+      </div>
 
-</div>
+      <!-- DOCUMENT -->
+      <div class="cat-card">
+        <div class="cat-icon" style="background:#f0fdf4;color:#16a34a">📝</div>
+        <h2>Document &amp; Ebook</h2>
+        <p>Convert DOCX, EPUB, and document formats locally</p>
+        <div class="cat-links">
+          <a href="pages/document.html?from=docx&to=pdf">DOCX → PDF</a>
+          <a href="pages/document.html?from=pdf&to=word">PDF → Word</a>
+          <a href="pages/document.html?from=epub&to=pdf">EPUB → PDF</a>
+          <a href="pages/document.html?from=pdf&to=epub">PDF → EPUB</a>
+          <a href="pages/document.html">View All →</a>
+        </div>
+      </div>
 
-<script>
-const fileInput = document.getElementById("fileInput");
-const outputFormat = document.getElementById("outputFormat");
-const convertBtn = document.getElementById("convertBtn");
-const log = document.getElementById("log");
-const download = document.getElementById("download");
+    </div>
+  </main>
 
-let file;
+  <!-- HOW IT WORKS -->
+  <section class="how">
+    <div class="how-inner">
+      <h2>How it works</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Choose a format</h3>
+          <p>Pick what you want to convert from the categories above</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Drop your file</h3>
+          <p>Drag & drop or browse to select your file — no size limits</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Download</h3>
+          <p>Conversion runs locally and your file downloads instantly</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-const formatMap = {
-  mp4:["mp3","gif"],
-  mp3:["ogg"],
-  png:["jpg","pdf"],
-  jpg:["png","pdf"],
-  webp:["jpg","png"],
-  heic:["jpg","png"]
-};
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>Convertly — All conversions happen locally in your browser. Your files never leave your device.</p>
+  </footer>
 
-fileInput.onchange = () => {
-  file = fileInput.files[0];
-  const ext = file.name.split('.').pop().toLowerCase();
-
-  outputFormat.innerHTML = "";
-  (formatMap[ext] || []).forEach(f=>{
-    let opt = document.createElement("option");
-    opt.value=f;
-    opt.textContent=f;
-    outputFormat.appendChild(opt);
-  });
-};
-
-convertBtn.onclick = async () => {
-  if(!file) return alert("Upload file");
-
-  const ext = file.name.split('.').pop().toLowerCase();
-  const out = outputFormat.value;
-
-  log.innerHTML="Processing...";
-
-  if(ext==="heic"){
-    const blob = await heic2any({blob:file,toType:`image/${out}`});
-    downloadFile(blob,`converted.${out}`);
-    return;
-  }
-
-  if(["png","jpg","webp"].includes(ext)){
-    const img = new Image();
-    img.src = URL.createObjectURL(file);
-    img.onload = () => {
-      const c = document.createElement("canvas");
-      c.width = img.width;
-      c.height = img.height;
-      c.getContext("2d").drawImage(img,0,0);
-      c.toBlob(b=>downloadFile(b,`converted.${out}`),`image/${out}`);
-    };
-    return;
-  }
-
-  // FFmpeg
-  const { createFFmpeg, fetchFile } = FFmpeg;
-  const ffmpeg = createFFmpeg({
-    log:true,
-    corePath:"https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js"
-  });
-
-  await ffmpeg.load();
-  ffmpeg.FS("writeFile","input",await fetchFile(file));
-
-  await ffmpeg.run("-i","input",`output.${out}`);
-
-  const data = ffmpeg.FS("readFile",`output.${out}`);
-  downloadFile(new Blob([data.buffer]),`converted.${out}`);
-};
-
-function downloadFile(blob,name){
-  const url = URL.createObjectURL(blob);
-  download.href=url;
-  download.download=name;
-  download.textContent="Download File";
-}
-</script>
-
+  <script src="js/main.js"></script>
 </body>
 </html>
