@@ -1,5 +1,3 @@
-// main.js — shared utilities for Convertly
-
 window.Convertly = {
 
   // Format file size
