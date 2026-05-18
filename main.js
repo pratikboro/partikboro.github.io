@@ -1,170 +1,286 @@
-const fileInput = document.getElementById('fileInput');
-const dropArea = document.getElementById('dropArea');
-const detectedSection = document.getElementById('detectedSection');
-const fileName = document.getElementById('fileName');
-const fileTypeBadge = document.getElementById('fileTypeBadge');
-const targetFormats = document.getElementById('targetFormats');
-const convertBtn = document.getElementById('convertBtn');
-const progressWrap = document.getElementById('progressWrap');
-const progressBar = document.getElementById('progressBar');
-const progressText = document.getElementById('progressText');
-const resultCard = document.getElementById('resultCard');
-const resultMeta = document.getElementById('resultMeta');
-const downloadBtn = document.getElementById('downloadBtn');
-const optionsPanel = document.getElementById('optionsPanel');
-const themeToggle = document.getElementById('themeToggle');
+/* =========================
+   ELEMENTS
+========================= */
+
+const fileInput = document.getElementById("fileInput");
+const dropArea = document.getElementById("dropArea");
+const detectedSection = document.getElementById("detectedSection");
+const fileName = document.getElementById("fileName");
+const fileTypeBadge = document.getElementById("fileTypeBadge");
+const targetFormats = document.getElementById("targetFormats");
+const convertBtn = document.getElementById("convertBtn");
+const progressWrap = document.getElementById("progressWrap");
+const progressBar = document.getElementById("progressBar");
+const progressText = document.getElementById("progressText");
+const resultCard = document.getElementById("resultCard");
+const resultMeta = document.getElementById("resultMeta");
+const downloadBtn = document.getElementById("downloadBtn");
+const optionsPanel = document.getElementById("optionsPanel");
+const themeToggle = document.getElementById("themeToggle");
+
+/* =========================
+   STATE
+========================= */
 
 let currentFile = null;
 let selectedFormat = null;
 let resultBlob = null;
 
-/* THEME */
+/* =========================
+   THEME
+========================= */
 
-if (localStorage.getItem('theme') === 'light') {
-  document.body.classList.add('light');
-  themeToggle.textContent = '☀️';
+function loadTheme() {
+  const savedTheme = localStorage.getItem("theme");
+
+  if (savedTheme === "light") {
+    document.body.classList.add("light");
+
+    if (themeToggle) {
+      themeToggle.textContent = "☀️";
+    }
+  } else {
+    if (themeToggle) {
+      themeToggle.textContent = "🌙";
+    }
+  }
 }
 
-themeToggle.addEventListener('click', () => {
+loadTheme();
 
-  document.body.classList.toggle('light');
+if (themeToggle) {
+  themeToggle.addEventListener("click", () => {
+    document.body.classList.toggle("light");
 
-  const light = document.body.classList.contains('light');
+    const isLight = document.body.classList.contains("light");
 
-  localStorage.setItem('theme', light ? 'light' : 'dark');
+    localStorage.setItem("theme", isLight ? "light" : "dark");
 
-  themeToggle.textContent = light ? '☀️' : '🌙';
+    themeToggle.textContent = isLight ? "☀️" : "🌙";
+  });
+}
 
-});
-
-/* FILE TYPES */
+/* =========================
+   FILE TYPES
+========================= */
 
 const FILE_TYPES = {
-
   image: {
-    formats: ['png','jpg','jpeg','webp','gif','bmp','svg','heic','avif','ico'],
-    outputs: ['png','jpg','webp','gif','bmp','ico','pdf']
+    formats: [
+      "png",
+      "jpg",
+      "jpeg",
+      "webp",
+      "gif",
+      "bmp",
+      "svg"
+    ],
+
+    outputs: [
+      "png",
+      "jpg",
+      "webp",
+      "gif"
+    ]
   },
 
   video: {
-    formats: ['mp4','mov','avi','webm','mkv'],
-    outputs: ['mp4','webm','gif','mp3']
+    formats: [
+      "mp4",
+      "mov",
+      "avi",
+      "webm",
+      "mkv"
+    ],
+
+    outputs: [
+      "mp4",
+      "webm",
+      "gif"
+    ]
   },
 
   audio: {
-    formats: ['mp3','wav','ogg','flac','aac'],
-    outputs: ['mp3','wav','ogg']
+    formats: [
+      "mp3",
+      "wav",
+      "ogg",
+      "aac"
+    ],
+
+    outputs: [
+      "mp3",
+      "wav",
+      "ogg"
+    ]
   },
 
   document: {
-    formats: ['pdf','docx','epub'],
-    outputs: ['pdf','docx','epub']
-  }
+    formats: [
+      "pdf",
+      "docx",
+      "txt"
+    ],
 
+    outputs: [
+      "pdf",
+      "txt"
+    ]
+  }
 };
 
-/* DROPZONE */
+/* =========================
+   DRAG & DROP
+========================= */
 
-['dragenter','dragover'].forEach(event => {
+if (dropArea) {
 
-  dropArea.addEventListener(event, e => {
-    e.preventDefault();
-    dropArea.classList.add('dragging');
+  ["dragenter", "dragover"].forEach(eventName => {
+
+    dropArea.addEventListener(eventName, e => {
+      e.preventDefault();
+      dropArea.classList.add("dragging");
+    });
+
   });
 
-});
+  ["dragleave", "drop"].forEach(eventName => {
 
-['dragleave','drop'].forEach(event => {
+    dropArea.addEventListener(eventName, e => {
+      e.preventDefault();
+      dropArea.classList.remove("dragging");
+    });
 
-  dropArea.addEventListener(event, e => {
-    e.preventDefault();
-    dropArea.classList.remove('dragging');
   });
 
-});
+  dropArea.addEventListener("drop", e => {
 
-fileInput.addEventListener('change', e => {
-  handleFile(e.target.files[0]);
-});
+    const file = e.dataTransfer.files[0];
 
-dropArea.addEventListener('drop', e => {
-  const file = e.dataTransfer.files[0];
-  if (file) handleFile(file);
-});
+    if (file) {
+      handleFile(file);
+    }
 
-/* HANDLE FILE */
-
-function handleFile(file) {
-
-  currentFile = file;
-
-  const ext = file.name.split('.').pop().toLowerCase();
-
-  const category = detectCategory(ext);
-
-  fileName.textContent = file.name;
-
-  fileTypeBadge.textContent = category.toUpperCase();
-
-  detectedSection.classList.remove('hidden');
-
-  resultCard.classList.add('hidden');
-
-  buildTargets(category, ext);
-
-  if (category === 'image') {
-    optionsPanel.classList.remove('hidden');
-  } else {
-    optionsPanel.classList.add('hidden');
-  }
+  });
 
 }
 
-/* DETECT CATEGORY */
+/* =========================
+   FILE INPUT
+========================= */
 
-function detectCategory(ext) {
+if (fileInput) {
 
-  for (const [key,val] of Object.entries(FILE_TYPES)) {
+  fileInput.addEventListener("change", e => {
 
-    if (val.formats.includes(ext)) {
-      return key;
+    const file = e.target.files[0];
+
+    if (file) {
+      handleFile(file);
+    }
+
+  });
+
+}
+
+/* =========================
+   HANDLE FILE
+========================= */
+
+function handleFile(file) {
+
+  if (!file) return;
+
+  currentFile = file;
+  selectedFormat = null;
+
+  const ext = getExtension(file.name);
+
+  const category = detectCategory(ext);
+
+  if (fileName) {
+    fileName.textContent = file.name;
+  }
+
+  if (fileTypeBadge) {
+    fileTypeBadge.textContent = category.toUpperCase();
+  }
+
+  if (detectedSection) {
+    detectedSection.classList.remove("hidden");
+  }
+
+  if (resultCard) {
+    resultCard.classList.add("hidden");
+  }
+
+  buildTargets(category, ext);
+
+  if (optionsPanel) {
+
+    if (category === "image") {
+      optionsPanel.classList.remove("hidden");
+    } else {
+      optionsPanel.classList.add("hidden");
     }
 
   }
 
-  return 'unknown';
+}
+
+/* =========================
+   DETECT CATEGORY
+========================= */
+
+function detectCategory(ext) {
+
+  for (const [category, data] of Object.entries(FILE_TYPES)) {
+
+    if (data.formats.includes(ext)) {
+      return category;
+    }
+
+  }
+
+  return "unknown";
 
 }
 
-/* BUILD TARGETS */
+/* =========================
+   BUILD TARGETS
+========================= */
 
 function buildTargets(category, currentExt) {
 
-  targetFormats.innerHTML = '';
+  if (!targetFormats) return;
+
+  targetFormats.innerHTML = "";
 
   if (!FILE_TYPES[category]) return;
 
-  FILE_TYPES[category].outputs.forEach(fmt => {
+  FILE_TYPES[category].outputs.forEach(format => {
 
-    if (fmt === currentExt) return;
+    if (format === currentExt) return;
 
-    const btn = document.createElement('button');
+    const btn = document.createElement("button");
 
-    btn.className = 'target-btn';
+    btn.className = "target-btn";
 
-    btn.textContent = fmt.toUpperCase();
+    btn.type = "button";
 
-    btn.onclick = () => {
+    btn.textContent = format.toUpperCase();
 
-      document
-        .querySelectorAll('.target-btn')
-        .forEach(el => el.classList.remove('active'));
+    btn.addEventListener("click", () => {
 
-      btn.classList.add('active');
+      document.querySelectorAll(".target-btn").forEach(button => {
+        button.classList.remove("active");
+      });
 
-      selectedFormat = fmt;
+      btn.classList.add("active");
 
-    };
+      selectedFormat = format;
+
+    });
 
     targetFormats.appendChild(btn);
 
@@ -172,117 +288,201 @@ function buildTargets(category, currentExt) {
 
 }
 
-/* CONVERT */
+/* =========================
+   CONVERT BUTTON
+========================= */
 
-convertBtn.addEventListener('click', async () => {
+if (convertBtn) {
 
-  if (!currentFile || !selectedFormat) {
-    alert('Please select a target format');
-    return;
-  }
+  convertBtn.addEventListener("click", async () => {
 
-  progressWrap.classList.remove('hidden');
+    if (!currentFile) {
+      alert("Please upload a file.");
+      return;
+    }
 
-  updateProgress(20, 'Reading file...');
+    if (!selectedFormat) {
+      alert("Please select a target format.");
+      return;
+    }
 
-  await delay(500);
+    if (progressWrap) {
+      progressWrap.classList.remove("hidden");
+    }
 
-  updateProgress(60, 'Converting...');
+    updateProgress(15, "Reading file...");
 
-  const blob = await fakeConvert(currentFile, selectedFormat);
+    await delay(400);
 
-  updateProgress(100, 'Done!');
+    updateProgress(50, "Converting...");
 
-  resultBlob = blob;
+    try {
 
-  resultCard.classList.remove('hidden');
+      const convertedBlob = await convertFile(
+        currentFile,
+        selectedFormat
+      );
 
-  resultMeta.textContent = `${selectedFormat.toUpperCase()} • ${(blob.size / 1024).toFixed(1)} KB`;
+      resultBlob = convertedBlob;
 
-  downloadBtn.onclick = () => {
+      updateProgress(100, "Conversion complete!");
 
-    const url = URL.createObjectURL(blob);
+      showResult(convertedBlob);
 
-    const a = document.createElement('a');
+    } catch (error) {
 
-    a.href = url;
+      console.error(error);
 
-    a.download = changeExt(currentFile.name, selectedFormat);
+      alert("Conversion failed.");
 
-    a.click();
-
-    setTimeout(() => URL.revokeObjectURL(url), 3000);
-
-  };
-
-});
-
-/* SIMPLE IMAGE CONVERSION */
-
-async function fakeConvert(file, format) {
-
-  const ext = file.name.split('.').pop().toLowerCase();
-
-  const category = detectCategory(ext);
-
-  if (category !== 'image') {
-    return file;
-  }
-
-  const img = new Image();
-
-  const dataURL = await readAsDataURL(file);
-
-  img.src = dataURL;
-
-  await img.decode();
-
-  const canvas = document.createElement('canvas');
-
-  const ctx = canvas.getContext('2d');
-
-  canvas.width = img.width;
-  canvas.height = img.height;
-
-  ctx.drawImage(img,0,0);
-
-  const mime = mimeFor(format);
-
-  return new Promise(resolve => {
-
-    canvas.toBlob(blob => {
-      resolve(blob);
-    }, mime, .92);
+    }
 
   });
 
 }
 
-/* HELPERS */
+/* =========================
+   REAL IMAGE CONVERSION
+========================= */
 
-function updateProgress(percent,text) {
+async function convertFile(file, format) {
 
-  progressBar.style.width = percent + '%';
+  const ext = getExtension(file.name);
 
-  progressText.textContent = text;
+  const category = detectCategory(ext);
+
+  /* IMAGE CONVERSION */
+
+  if (category === "image") {
+
+    const imageURL = await readAsDataURL(file);
+
+    const img = new Image();
+
+    img.src = imageURL;
+
+    await new Promise((resolve, reject) => {
+
+      img.onload = resolve;
+      img.onerror = reject;
+
+    });
+
+    const canvas = document.createElement("canvas");
+
+    canvas.width = img.width;
+    canvas.height = img.height;
+
+    const ctx = canvas.getContext("2d");
+
+    ctx.drawImage(img, 0, 0);
+
+    const mime = getMimeType(format);
+
+    return await new Promise(resolve => {
+
+      canvas.toBlob(blob => {
+
+        resolve(blob);
+
+      }, mime, 0.92);
+
+    });
+
+  }
+
+  /* OTHER FILES */
+
+  return file;
+
+}
+
+/* =========================
+   SHOW RESULT
+========================= */
+
+function showResult(blob) {
+
+  if (!resultCard || !resultMeta || !downloadBtn) return;
+
+  resultCard.classList.remove("hidden");
+
+  const sizeKB = (blob.size / 1024).toFixed(1);
+
+  resultMeta.textContent =
+    `${selectedFormat.toUpperCase()} • ${sizeKB} KB`;
+
+  downloadBtn.onclick = () => {
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+
+    a.href = url;
+
+    a.download = changeExtension(
+      currentFile.name,
+      selectedFormat
+    );
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    a.remove();
+
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+    }, 2000);
+
+  };
+
+}
+
+/* =========================
+   HELPERS
+========================= */
+
+function updateProgress(percent, text) {
+
+  if (progressBar) {
+    progressBar.style.width = percent + "%";
+  }
+
+  if (progressText) {
+    progressText.textContent = text;
+  }
 
 }
 
 function delay(ms) {
-  return new Promise(r => setTimeout(r,ms));
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function changeExt(name,ext) {
-  return name.replace(/\.[^/.]+$/, '') + '.' + ext;
+function getExtension(filename) {
+
+  return filename
+    .split(".")
+    .pop()
+    .toLowerCase();
+
+}
+
+function changeExtension(filename, ext) {
+
+  return filename.replace(/\.[^/.]+$/, "") + "." + ext;
+
 }
 
 function readAsDataURL(file) {
 
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
 
     const reader = new FileReader();
 
     reader.onload = e => resolve(e.target.result);
+
+    reader.onerror = reject;
 
     reader.readAsDataURL(file);
 
@@ -290,15 +490,22 @@ function readAsDataURL(file) {
 
 }
 
-function mimeFor(fmt) {
+function getMimeType(format) {
 
-  return {
-    png: 'image/png',
-    jpg: 'image/jpeg',
-    jpeg: 'image/jpeg',
-    webp: 'image/webp',
-    gif: 'image/gif',
-    bmp: 'image/bmp'
-  }[fmt] || 'image/png';
+  const mimeMap = {
+
+    png: "image/png",
+
+    jpg: "image/jpeg",
+
+    jpeg: "image/jpeg",
+
+    webp: "image/webp",
+
+    gif: "image/gif"
+
+  };
+
+  return mimeMap[format] || "image/png";
 
 }
