@@ -107,6 +107,14 @@ window.Convertly = {
         if (input.files[0]) onFile(input.files[0]);
       });
     }
+    
+    // Add click event listener to the "Choose Files" button
+    const chooseBtn = dropArea.querySelector('#chooseFileBtn');
+    if (chooseBtn && input) {
+        chooseBtn.addEventListener('click', () => {
+            input.click();
+        });
+    }
   },
 
   // Show progress
