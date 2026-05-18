@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Local Converter</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Local Converter 🔒</h1>
+
+<input type="file" id="fileInput" />
+<select id="convertType">
+  <option value="mp4-mp3">MP4 → MP3</option>
+  <option value="video-gif">Video → GIF</option>
+  <option value="image-png">Image → PNG</option>
+  <option value="image-jpg">Image → JPG</option>
+</select>
+
+<button onclick="convert()">Convert</button>
+
+<a id="downloadLink" style="display:none;">Download</a>
+
+<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.6/dist/ffmpeg.min.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
