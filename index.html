@@ -1,28 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Local Converter</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OmniConvert - Local Converter</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/epub.js/0.3.93/epub.min.js"></script>
+
+<style>
+body { font-family: Arial; background:#0f172a; color:white; }
+.drop-zone { border:2px dashed #475569; padding:40px; text-align:center; cursor:pointer; }
+</style>
 </head>
-<body>
 
-<h1>Local Converter 🔒</h1>
+<body class="p-6 flex justify-center">
 
-<input type="file" id="fileInput" />
-<select id="convertType">
-  <option value="mp4-mp3">MP4 → MP3</option>
-  <option value="video-gif">Video → GIF</option>
-  <option value="image-png">Image → PNG</option>
-  <option value="image-jpg">Image → JPG</option>
-</select>
+<div class="max-w-xl w-full bg-slate-800 p-6 rounded-xl">
 
-<button onclick="convert()">Convert</button>
+<h1 class="text-2xl mb-4 text-center">OmniConvert 🔒</h1>
 
-<a id="downloadLink" style="display:none;">Download</a>
+<div id="dropZone" class="drop-zone">
+<input type="file" id="fileInput">
+<p>Upload file</p>
+</div>
 
-<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.6/dist/ffmpeg.min.js"></script>
-<script src="script.js"></script>
+<select id="outputFormat" class="w-full mt-4 p-2 bg-slate-700"></select>
+
+<button id="convertBtn" class="w-full mt-4 bg-blue-600 p-2 rounded">Convert</button>
+
+<div id="log" class="mt-4 text-sm"></div>
+
+<a id="download" class="block mt-4 text-green-400"></a>
+
+</div>
+
+<script>
+const fileInput = document.getElementById("fileInput");
+const outputFormat = document.getElementById("outputFormat");
+const convertBtn = document.getElementById("convertBtn");
+const log = document.getElementById("log");
+const download = document.getElementById("download");
+
+let file;
+
+const formatMap = {
+  mp4:["mp3","gif"],
+  mp3:["ogg"],
+  png:["jpg","pdf"],
+  jpg:["png","pdf"],
+  webp:["jpg","png"],
+  heic:["jpg","png"]
+};
+
+fileInput.onchange = () => {
+  file = fileInput.files[0];
+  const ext = file.name.split('.').pop().toLowerCase();
+
+  outputFormat.innerHTML = "";
+  (formatMap[ext] || []).forEach(f=>{
+    let opt = document.createElement("option");
+    opt.value=f;
+    opt.textContent=f;
+    outputFormat.appendChild(opt);
+  });
+};
+
+convertBtn.onclick = async () => {
+  if(!file) return alert("Upload file");
+
+  const ext = file.name.split('.').pop().toLowerCase();
+  const out = outputFormat.value;
+
+  log.innerHTML="Processing...";
+
+  if(ext==="heic"){
+    const blob = await heic2any({blob:file,toType:`image/${out}`});
+    downloadFile(blob,`converted.${out}`);
+    return;
+  }
+
+  if(["png","jpg","webp"].includes(ext)){
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+    img.onload = () => {
+      const c = document.createElement("canvas");
+      c.width = img.width;
+      c.height = img.height;
+      c.getContext("2d").drawImage(img,0,0);
+      c.toBlob(b=>downloadFile(b,`converted.${out}`),`image/${out}`);
+    };
+    return;
+  }
+
+  // FFmpeg
+  const { createFFmpeg, fetchFile } = FFmpeg;
+  const ffmpeg = createFFmpeg({
+    log:true,
+    corePath:"https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js"
+  });
+
+  await ffmpeg.load();
+  ffmpeg.FS("writeFile","input",await fetchFile(file));
+
+  await ffmpeg.run("-i","input",`output.${out}`);
+
+  const data = ffmpeg.FS("readFile",`output.${out}`);
+  downloadFile(new Blob([data.buffer]),`converted.${out}`);
+};
+
+function downloadFile(blob,name){
+  const url = URL.createObjectURL(blob);
+  download.href=url;
+  download.download=name;
+  download.textContent="Download File";
+}
+</script>
 
 </body>
 </html>
