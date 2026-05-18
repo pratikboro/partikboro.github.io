@@ -6,7 +6,6 @@
   <title>Image Converter — Convertly</title>
   <link rel="stylesheet" href="../css/style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
-  <!-- heic2any for HEIC support -->
   <script src="https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js"></script>
 </head>
 <body>
@@ -20,48 +19,39 @@
     </div>
   </nav>
 
-  <div class="page-header">
-    <a href="../index.html" class="page-back">← Back to home</a>
-    <h1>🖼️ Image Converter</h1>
-    <p>Convert images between PNG, JPG, WEBP, HEIC, SVG, GIF, BMP and more. Everything runs locally.</p>
-  </div>
+  <div class="converter-modern-wrapper">
+    <h1 class="main-title">Image Converter</h1>
+    <p class="sub-title">Convert images online, for free. (100% locally)</p>
 
-  <!-- FORMAT SELECTOR -->
-  <div class="format-selector">
-    <div class="format-row">
-      <label>Convert from</label>
-      <select class="format-select" id="fromFmt">
-        <option value="auto">Auto Detect</option>
-        <option value="png">PNG</option>
-        <option value="jpg">JPG / JPEG</option>
-        <option value="webp">WEBP</option>
-        <option value="heic">HEIC</option>
-        <option value="jfif">JFIF</option>
-        <option value="gif">GIF</option>
-        <option value="bmp">BMP</option>
-        <option value="svg">SVG</option>
-        <option value="avif">AVIF</option>
-        <option value="ico">ICO</option>
-        <option value="tiff">TIFF</option>
-      </select>
-      <span class="format-arrow">→</span>
-      <label>Convert to</label>
-      <select class="format-select" id="toFmt">
-        <option value="png">PNG</option>
-        <option value="jpg">JPG</option>
-        <option value="webp">WEBP</option>
-        <option value="gif">GIF</option>
-        <option value="bmp">BMP</option>
-        <option value="ico">ICO</option>
-        <option value="avif">AVIF</option>
-        <option value="svg">SVG (trace)</option>
-        <option value="pdf">PDF</option>
-      </select>
+    <div class="ad-placeholder"></div>
+
+    <div class="drop-zone-modern" id="dropArea">
+      <input type="file" id="fileInput" accept="image/*,.heic,.heif,.jfif,.avif,.tiff,.tif,.svg,.bmp,.ico,video/*,audio/*" />
+      
+      <div class="btn-split-group">
+        <button class="btn-primary" id="chooseFileBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+          Choose Files
+        </button>
+        <button class="btn-primary-dropdown">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+      </div>
+
+      <p class="drop-info">Max file size 1GB. <a href="#">Sign Up</a> for more</p>
+      <p class="drop-terms">By proceeding, you agree to our <a href="#">Terms of Use</a>.</p>
     </div>
   </div>
 
-  <!-- OPTIONS -->
-  <div class="options-panel">
+  <div id="dynamicOptions" class="dynamic-options-panel" style="display: none;">
+    <div class="detected-file-info">
+      <span class="file-icon">📄</span>
+      <div>
+        <h3 id="detectedName">filename.jpg</h3>
+        <p id="detectedType">Auto-detected</p>
+      </div>
+    </div>
+
     <div class="options-grid">
       <div class="option-group">
         <label>Quality (<span id="qVal">92</span>%)</label>
@@ -76,31 +66,22 @@
         <input type="number" id="maxH" value="0" min="0" max="8000" />
       </div>
     </div>
-  </div>
 
-  <!-- DROP ZONE -->
-  <div class="drop-zone">
-    <div class="drop-area" id="dropArea">
-      <input type="file" id="fileInput" accept="image/*,.heic,.heif,.jfif,.avif,.tiff,.tif,.svg,.bmp,.ico" />
-      <span class="drop-icon">📂</span>
-      <h3>Drop image here or click to browse</h3>
-      <p>Supports PNG, JPG, WEBP, HEIC, GIF, BMP, SVG, AVIF, ICO, JFIF, TIFF and more</p>
+    <div class="convert-actions">
+      <label>Convert to:</label>
+      <select class="format-select" id="toFmt">
+        </select>
+      <button class="convert-btn" id="convertBtn">Convert Now</button>
     </div>
   </div>
 
-  <div class="status-msg" id="statusMsg"></div>
+  <div class="status-msg" id="statusMsg" style="display: none;"></div>
 
-  <div style="text-align:center; padding: 0 24px 24px;">
-    <button class="convert-btn" id="convertBtn" disabled>Convert Image</button>
-  </div>
-
-  <!-- PROGRESS -->
   <div class="progress-wrap" id="progressWrap">
     <div class="progress-bar-bg"><div class="progress-bar" id="progressBar"></div></div>
     <div class="progress-label" id="progressLabel">Processing...</div>
   </div>
 
-  <!-- RESULT -->
   <div class="result-area" id="resultArea">
     <div class="result-card">
       <div class="result-info">
@@ -108,27 +89,6 @@
         <div class="result-meta" id="resultMeta"></div>
       </div>
       <button class="download-btn" id="downloadBtn">⬇ Download</button>
-    </div>
-  </div>
-
-  <!-- QUICK FORMAT CHIPS -->
-  <div class="formats-grid">
-    <h2>Popular conversions</h2>
-    <div class="format-chips">
-      <a class="format-chip" href="?from=webp&to=png">WEBP → PNG</a>
-      <a class="format-chip" href="?from=webp&to=jpg">WEBP → JPG</a>
-      <a class="format-chip" href="?from=jfif&to=png">JFIF → PNG</a>
-      <a class="format-chip" href="?from=heic&to=jpg">HEIC → JPG</a>
-      <a class="format-chip" href="?from=heic&to=png">HEIC → PNG</a>
-      <a class="format-chip" href="?from=png&to=jpg">PNG → JPG</a>
-      <a class="format-chip" href="?from=jpg&to=png">JPG → PNG</a>
-      <a class="format-chip" href="?from=png&to=webp">PNG → WEBP</a>
-      <a class="format-chip" href="?from=jpg&to=webp">JPG → WEBP</a>
-      <a class="format-chip" href="?from=bmp&to=png">BMP → PNG</a>
-      <a class="format-chip" href="?from=gif&to=png">GIF → PNG</a>
-      <a class="format-chip" href="?from=png&to=ico">PNG → ICO</a>
-      <a class="format-chip" href="?from=jpg&to=pdf">JPG → PDF</a>
-      <a class="format-chip" href="?from=png&to=pdf">PNG → PDF</a>
     </div>
   </div>
 
@@ -141,15 +101,15 @@
   (function() {
     const C = window.Convertly;
     const dropArea = document.getElementById('dropArea');
-    const fileInput = document.getElementById('fileInput');
+    const dynamicOptions = document.getElementById('dynamicOptions');
+    const detectedName = document.getElementById('detectedName');
+    const detectedType = document.getElementById('detectedType');
+    const toFmtSelect = document.getElementById('toFmt');
     const convertBtn = document.getElementById('convertBtn');
-    const fromFmt = document.getElementById('fromFmt');
-    const toFmt = document.getElementById('toFmt');
     const qualityRange = document.getElementById('quality');
     const qVal = document.getElementById('qVal');
     const maxW = document.getElementById('maxW');
     const maxH = document.getElementById('maxH');
-    const statusMsg = document.getElementById('statusMsg');
     const progressWrap = document.getElementById('progressWrap');
     const progressBar = document.getElementById('progressBar');
     const progressLabel = document.getElementById('progressLabel');
@@ -159,15 +119,57 @@
     let resultBlob = null;
     let resultFilename = '';
 
-    // Apply URL params
-    C.applyParams(fromFmt, toFmt);
+    const conversionMap = {
+      'image/jpeg': ['png', 'webp', 'gif', 'pdf', 'bmp'],
+      'image/png': ['jpg', 'webp', 'gif', 'pdf', 'ico', 'svg'],
+      'image/webp': ['png', 'jpg', 'gif', 'pdf'],
+      'image/gif': ['mp4', 'png', 'webp'],
+      'image/heic': ['jpg', 'png'],
+      'image/heif': ['jpg', 'png'],
+      'video/mp4': ['mp3', 'gif', 'webm'],
+      'default-image': ['png', 'jpg', 'webp', 'pdf'] 
+    };
 
     qualityRange.addEventListener('input', () => { qVal.textContent = qualityRange.value; });
 
     C.setupDropZone(dropArea, file => {
       currentFile = file;
-      statusMsg.textContent = `Selected: ${file.name} (${C.formatSize(file.size)})`;
-      convertBtn.disabled = false;
+      
+      // 1. Identify File Type
+      let fileType = file.type;
+      let ext = file.name.split('.').pop().toLowerCase();
+      
+      if (!fileType && (ext === 'heic' || ext === 'heif')) fileType = 'image/heic';
+
+      detectedName.textContent = file.name;
+      detectedType.textContent = `Detected format: ${fileType || ext.toUpperCase()}`;
+      
+      let availableFormats = conversionMap[fileType];
+      if (!availableFormats && fileType.startsWith('image/')) {
+        availableFormats = conversionMap['default-image'];
+      }
+
+      toFmtSelect.innerHTML = ''; 
+      
+      if (availableFormats && availableFormats.length > 0) {
+        availableFormats.forEach(fmt => {
+          const option = document.createElement('option');
+          option.value = fmt;
+          option.textContent = fmt.toUpperCase();
+          toFmtSelect.appendChild(option);
+        });
+        convertBtn.disabled = false;
+        detectedType.style.color = '#10b981';
+      } else {
+        const option = document.createElement('option');
+        option.textContent = "Unsupported File Type";
+        toFmtSelect.appendChild(option);
+        convertBtn.disabled = true;
+        detectedType.textContent = '❌ Format not supported for local conversion';
+        detectedType.style.color = '#ef4444';
+      }
+
+      dynamicOptions.style.display = 'block';
       resultArea.style.display = 'none';
       progressWrap.style.display = 'none';
     });
@@ -176,7 +178,7 @@
 
     async function convert() {
       if (!currentFile) return;
-      const to = toFmt.value;
+      const to = toFmtSelect.value;
       convertBtn.disabled = true;
       resultArea.style.display = 'none';
 
@@ -184,16 +186,13 @@
 
       try {
         let blob;
-        const fromVal = fromFmt.value === 'auto'
-          ? currentFile.name.split('.').pop().toLowerCase()
-          : fromFmt.value;
+        const fromVal = currentFile.name.split('.').pop().toLowerCase();
 
         C.showProgress(progressWrap, progressBar, progressLabel, 30, 'Decoding image...');
 
-        // HEIC needs special handling
         let fileBlob = currentFile;
         if (fromVal === 'heic' || fromVal === 'heif' || currentFile.type === 'image/heic' || currentFile.type === 'image/heif') {
-          statusMsg.textContent = 'Converting HEIC (this may take a moment)...';
+          progressLabel.textContent = 'Converting HEIC (this may take a moment)...';
           fileBlob = await heic2any({ blob: currentFile, toType: 'image/jpeg', quality: 0.95 });
           if (Array.isArray(fileBlob)) fileBlob = fileBlob[0];
         }
@@ -208,7 +207,6 @@
 
           C.showProgress(progressWrap, progressBar, progressLabel, 60, 'Converting...');
 
-          // Apply resize if needed
           let w = img.naturalWidth, h = img.naturalHeight;
           const mw = parseInt(maxW.value) || 0;
           const mh = parseInt(maxH.value) || 0;
@@ -237,7 +235,7 @@
         });
 
       } catch (err) {
-        statusMsg.textContent = '❌ Error: ' + err.message;
+        progressLabel.textContent = '❌ Error: ' + err.message;
         console.error(err);
       }
 
@@ -245,18 +243,15 @@
     }
 
     async function imageToPDF(fileBlob) {
-      // Simple PDF with embedded image
       const dataURL = await C.readFileAsDataURL(fileBlob);
       const img = await C.loadImage(dataURL);
       const w = img.naturalWidth, h = img.naturalHeight;
       
-      // A4 at 72dpi: 595x842 pts. Scale image to fit.
       const pageW = 595, pageH = 842;
       const scale = Math.min(pageW / w, pageH / h, 1);
       const iw = Math.round(w * scale), ih = Math.round(h * scale);
       const x = Math.round((pageW - iw) / 2), y = Math.round((pageH - ih) / 2);
 
-      // Convert to JPEG for embedding
       const canvas = document.createElement('canvas');
       canvas.width = w; canvas.height = h;
       const ctx = canvas.getContext('2d');
@@ -268,55 +263,10 @@
       const imgStream = new Uint8Array(jpegBytes.length);
       for (let i = 0; i < jpegBytes.length; i++) imgStream[i] = jpegBytes.charCodeAt(i);
 
-      // Build minimal PDF
-      const enc = new TextEncoder();
-      let pdf = '';
-      const offsets = [];
-
-      const obj = (n, content) => {
-        offsets[n] = pdf.length;
-        pdf += `${n} 0 obj\n${content}\nendobj\n`;
-      };
-
-      pdf = '%PDF-1.4\n';
-
-      obj(1, '<< /Type /Catalog /Pages 2 0 R >>');
-      obj(2, `<< /Type /Pages /Kids [3 0 R] /Count 1 >>`);
-      obj(3, `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageW} ${pageH}] /Contents 4 0 R /Resources << /XObject << /Im1 5 0 R >> >> >>`);
-
-      const stream = `q\n${iw} 0 0 ${ih} ${x} ${y} cm\n/Im1 Do\nQ`;
-      obj(4, `<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`);
-
-      // Image object — we need binary, so build separately
-      const imgHdr = `5 0 obj\n<< /Type /XObject /Subtype /Image /Width ${w} /Height ${h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${imgStream.length} >>\nstream\n`;
-      const imgFtr = `\nendstream\nendobj\n`;
-
-      // Encode pdf so far as bytes
-      const pdfBytes1 = enc.encode(pdf);
-      const imgHdrBytes = enc.encode(imgHdr);
-      const imgFtrBytes = enc.encode(imgFtr);
-
-      offsets[5] = pdfBytes1.length + imgHdrBytes.length - imgHdrBytes.length + pdfBytes1.length;
-      // Simpler: just assemble all parts
-      const xrefOffset = pdfBytes1.length + imgHdrBytes.length + imgStream.length + imgFtrBytes.length;
-
-      // Build xref
-      let xref = 'xref\n';
-      xref += `0 6\n0000000000 65535 f \n`;
-      let running = 0;
-      // recalc offsets properly
-      const parts = [enc.encode(pdf), imgHdrBytes, imgStream, imgFtrBytes];
-      const sizes = parts.map(p => p.length);
-      let pos = 0;
-      const realOffsets = {};
-      // obj 1 is at start of "%PDF-1.4\n" section
-      // Simplified approach: use jsPDF-free minimal PDF
-      // Return a simple 1-page PDF
       return buildSimplePDF(w, h, iw, ih, x, y, imgStream, pageW, pageH);
     }
 
     function buildSimplePDF(imgW, imgH, drawW, drawH, drawX, drawY, jpegBytes, pageW, pageH) {
-      // Minimal valid PDF with JPEG image
       const parts = [];
       const offsets = [];
       let size = 0;
@@ -334,20 +284,15 @@
       };
 
       push('%PDF-1.4\n%\xe2\xe3\xcf\xd3\n');
-
       offsets[1] = size;
       push('1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n');
-
       offsets[2] = size;
       push('2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n');
-
       offsets[3] = size;
       push(`3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageW} ${pageH}] /Contents 4 0 R /Resources << /XObject << /Im0 5 0 R >> >> >>\nendobj\n`);
-
       const stream = `q ${drawW} 0 0 ${drawH} ${drawX} ${drawY} cm /Im0 Do Q`;
       offsets[4] = size;
       push(`4 0 obj\n<< /Length ${stream.length} >>\nstream\n${stream}\nendstream\nendobj\n`);
-
       offsets[5] = size;
       push(`5 0 obj\n<< /Type /XObject /Subtype /Image /Width ${imgW} /Height ${imgH} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpegBytes.length} >>\nstream\n`);
       pushBin(jpegBytes);
@@ -365,22 +310,12 @@
     }
 
     async function imageToSVG(fileBlob) {
-      // Embed as base64 image inside SVG
       const dataURL = await C.readFileAsDataURL(fileBlob);
       const img = await C.loadImage(dataURL);
       const w = img.naturalWidth, h = img.naturalHeight;
       const svgStr = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><image href="${dataURL}" width="${w}" height="${h}"/></svg>`;
       return new Blob([svgStr], { type: 'image/svg+xml' });
     }
-
-    // Highlight active chip
-    const params = C.getParams();
-    document.querySelectorAll('.format-chip').forEach(chip => {
-      const href = chip.getAttribute('href');
-      if (href.includes(`from=${params.from}`) && href.includes(`to=${params.to}`)) {
-        chip.classList.add('active');
-      }
-    });
   })();
   </script>
 </body>
